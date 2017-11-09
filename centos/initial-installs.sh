@@ -66,6 +66,20 @@ select yn in "Yes" "No"; do
 done
 
 
+echo "Would you like to add spack?"
+select yn in "Yes" "No"; do
+	case $yn in 
+		Yes)
+			cd $TMP_DIR;
+			mkdir spack;
+			cd spack;
+			git clone https://github.com/spack/spack.git .;
+			spack/share/spack/setup-env.sh;
+			break;;
+		No) break;;
+	esac
+done
+
 echo "Would you like to install dev tools?"
 select yn in "Yes" "No"; do
 	case $yn in 
@@ -78,6 +92,16 @@ select yn in "Yes" "No"; do
 	esac
 done
 
+
+echo "Would you like to install bind?"
+select yn in "Yes" "No"; do
+	case $yn in
+		Yes) 
+			pgkinstall bind bind-utils;
+			break;;
+		No)	break;;
+	esac
+done
 
 
 echo "Would you like to install htop?"
