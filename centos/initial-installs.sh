@@ -1,5 +1,11 @@
 #!/bin/bash
 
+## This is an initial installation script to add useful tools to a new CentOS installation.
+## This will prompt the user about whether to install different things.
+
+## sudo rights are NEEDED for this to work at all
+
+
 TMPDIR=/home/$USER/initial_install_tmp
 BASIC_UTILS="fish vim nano ntp git wget"
 
@@ -13,16 +19,18 @@ GCC_7_DIR="gcc-7.2.0"
 GCC_DEV_PKGS="libmpc-devel mpfr-devel gmp-devel"
 GCC_CONF_OPTS="--with-system-zlib --disable-multilib --enable-languages=c,c++"
 
-
+# Values used by the MPI portion
 MPI_URL="https://www.open-mpi.org/software/ompi/v3.0/downloads/openmpi-3.0.0.tar.gz"
 MPI_TAR="openmpi-3.0.0.tar.gz"
 MPI_DIR="openmpi-3.0.0"
-MPI_CONF_OPTS=" --prefix=/usr/local --enable-mpi-cxx --enable-oshmem --enable-cxx-exceptions"
+MPI_CONF_OPTS=" --prefix=/usr/local/mpi --enable-oshmem --with-ucx=/usr/local/ucx"
 
+# Used by the ucx portion
 UCX_URL="https://github.com/openucx/ucx/releases/download/v1.2.1/ucx-1.2.1.tar.gz"
+UCX_INTIALL_PATH="/usr/local/ucx"
 UCX_TAR="ucx-1.2.1.tar.gz"
 UCX_DIR="ucx-1.2.1"
-UCX_CONF_OPTS="--disable-numa --with-mpi --with-sse42 --with-avx --prefix=/usr/local"
+UCX_CONF_OPTS="--disable-numa --with-mpi --with-sse42 --prefix=/usr/local/ucx"
 
 mkdir -p $TMPDIR
 cd $TMPDIR
@@ -118,6 +126,7 @@ select yn in "Yes" "No"; do
 			echo "This may take awhile..";
 			cd $TMPDIR;
 			
+			# build and install ucx portion
 			mkdir -p ucx;
 			cd ucx;
 			wget $UCX_URL;
@@ -126,9 +135,9 @@ select yn in "Yes" "No"; do
 			./configure $UCX_CONF_OPTS;
 			make -j $(nproc);
 			make check;
-			makeinstall;			
-			
-			
+			makeinstall;		
+	
+			# build and install open mpi			
 			cd $TMPDIR;
 			mkdir -p mpi;
 			cd mpi;
