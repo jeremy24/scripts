@@ -55,6 +55,7 @@ select yn in "Yes" "No"; do
 done
 
 echo "Would you like to install basic utilities?"
+echo "They are: "$BASIC_UTILS
 select yn in "Yes" "No"; do
 	case $yn in 
 		Yes) 	
@@ -115,6 +116,27 @@ select yn in "Yes" "No"; do
 done
 
 
+
+echo "Would you like to install git and configure it?"
+select yn in "Yes" "No"; do
+	case $yn in
+		Yes)
+			pkginstall git;
+			echo -n "Please enter you git username:  ";
+			read gituser;
+			echo -n "Please enter your git email:  ";
+			read gitemail;
+			git config --global user.name $gituser;
+			git config --global user.email $gitemail;
+			git config --global credential.helper store;
+			git config --global credential.helper 'cache --timeout 3600';
+			echo "Your git password will be cached for 3600 seconds.";
+			break;;
+		No)
+			break;;
+	esac
+done
+	
 echo "Would you like to install gcc 7?"
 select yn in "Yes" "No"; do
 	case $yn in 
