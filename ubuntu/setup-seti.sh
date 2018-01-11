@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 URL="http://setiathome.berkeley.edu/" 
 
 if [ $1 ]; then
