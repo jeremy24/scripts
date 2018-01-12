@@ -81,10 +81,10 @@ printf 'c.NotebookApp.certfile = "'$PEM'"\n'     > $CONFIG
 printf 'c.NotebookApp.keyfile  = "'$KEY'"\n'     >> $CONFIG
 printf 'c.NotebookApp.ip = "'$IP'"\n'            >> $CONFIG
 printf 'c.NotebookApp.password = "PASSWORD"\n'   >> $CONFIG
-printf 'c.NotebookApp.open_browser = "False"\n'  >> $CONFIG
-printf 'c.NotebookApp.port = "'$PORT'"\n'        >> $CONFIG
+printf 'c.NotebookApp.open_browser = False\n'  >> $CONFIG
+printf 'c.NotebookApp.port = '$PORT'\n'        >> $CONFIG
 
-sudo firewall-cmd --zone=public --add-port=$PORT/tmp
+sudo firewall-cmd --zone=public --add-port=$PORT/tcp
 
 echo 
 echo "Please copy your hashed password from the JSON file in "$HOME"/.jupyter into the .py config file located in the same directory."
