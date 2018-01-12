@@ -77,12 +77,12 @@ SSLOPTS='-x509 -nodes -days 3000 -newkey rsa:2048 -keyout '$KEY' -out '$PEM
 openssl req $SSLOPTS
 
 # first will overwite the file contents
-printf 'c.NotebookApp.certfile = "'$PEM'"\n'    > $CONFIG
-printf 'c.NotebookApp.keyfile  = "'$KEY'"\n'    >> $CONFIG
-printf 'c.NotebookApp.ip = "'$IP'"\n'           >> $CONFIG
-printf 'c.NotebookApp.password = "PASSWORD"\n'  >> $CONFIG
-printf 'c.NotebookApp.open_browser = "False"'   >> $CONFIG
-printf 'c.NotebookApp.port = "'$PORT'"'         >> $CONFIG
+printf 'c.NotebookApp.certfile = "'$PEM'"\n'     > $CONFIG
+printf 'c.NotebookApp.keyfile  = "'$KEY'"\n'     >> $CONFIG
+printf 'c.NotebookApp.ip = "'$IP'"\n'            >> $CONFIG
+printf 'c.NotebookApp.password = "PASSWORD"\n'   >> $CONFIG
+printf 'c.NotebookApp.open_browser = "False"\n'  >> $CONFIG
+printf 'c.NotebookApp.port = "'$PORT'"\n'        >> $CONFIG
 
 sudo firewall-cmd --zone=public --add-port=$PORT/tmp
 
