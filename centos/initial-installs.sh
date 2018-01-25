@@ -91,6 +91,21 @@ select yn in "Yes" "No"; do
 	esac
 done
 
+echo "Would you like to enable a proxy for yum?"
+select yn in "Yes" "no"; do
+	case $yn in 
+		Yes) 
+			ENVFILE="/etc/environment";
+			echo -n "Please enter the proxy ip/hostname:   ";
+                        read PROXYIP;
+			echo -n "Please enter the proxy port:   ";
+			read PROXYPORT;	
+			printf "http_proxy="$PROXYIP":"$PROXYPORT"\n">>$ENVFILE; 			
+			break;;
+		No)	break;;
+	esac
+done
+
 
 echo "Would you like to install bind?"
 select yn in "Yes" "No"; do
