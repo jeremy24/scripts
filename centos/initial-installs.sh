@@ -92,7 +92,7 @@ select yn in "Yes" "No"; do
 done
 
 echo "Would you like to enable a proxy for yum?"
-select yn in "Yes" "no"; do
+select yn in "Yes" "No"; do
 	case $yn in 
 		Yes) 
 			ENVFILE="/etc/environment";
