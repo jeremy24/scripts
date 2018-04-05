@@ -53,6 +53,13 @@ alias tail="whiptail --yesno"
 
 
 
+ask_user () {
+    local ret=tail $1 20 60;
+    return ret;
+}
+
+
+
 echo "Do you want to add the epel-release repo?"
 select yn in "Yes" "No"; do
 	case $yn in 
@@ -64,22 +71,15 @@ select yn in "Yes" "No"; do
 done
 
 
-if tail "Would you like to update system packages?" 20 60; then
+if ask_user "Would you like to update system packages?"; then
     pkgupdate;
 fi
 
+if tail "Would you like to install basic utilities?" 20 60; then
+    echo "They are: " $[BASIC_UTILS];
+    pkginstall $[BASIC_UTILS];
+fi
 
-echo "Would you like to install basic utilities?"
-echo "They are: "$BASIC_UTILS
-select yn in "Yes" "No"; do
-	case $yn in 
-		Yes) 	
-			echo "Installing: " $BASIC_UTILS;
-			pkginstall $BASIC_UTILS; 
-			break;;
-		No) 	break;;
-	esac
-done
 
 echo "Would you like to install docker?"
 select yn in "Yes" "No"; do
