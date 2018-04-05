@@ -47,18 +47,13 @@ alias pkgginstall="sudo yum groupinstall -y"
 alias pkginstall="sudo yum install -y"
 alias pkgupdate="sudo yum update -y"
 alias makeinstall="sudo make install"
+alias tail="whiptail --yesno"
 
 
-echo "Would you like to update packages?"
-select yn in "Yes" "No"; do
-	case $yn in 
-		Yes) 
-			echo  "sudo yum update -y";
-			pkgupdate;
-			break;;
-		No) 	break;;
-	esac
-done
+if tail "Would you like to update system packages?" 20 60; then
+    pkgupdate;
+fi
+
 
 echo "Would you like to install basic utilities?"
 echo "They are: "$BASIC_UTILS
