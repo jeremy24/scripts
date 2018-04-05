@@ -7,7 +7,7 @@
 
 
 TMPDIR=/home/$USER/initial_install_tmp
-BASIC_UTILS="fish vim nano ntp git wget"
+BASIC_UTILS="fish vim nano ntp git wget net-tools lsof"
 
 EPEL_RPM_URL="dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm"
 EPEL_RPM_DIR="epel-release-7-11.noarch.rpm"
@@ -38,6 +38,8 @@ DCKR_PKGS="yum-utils device-mapper-persistent-data lvm2"
 DCKR_REPO="https://download.docker.com/linux/centos/docker-ce.repo"
 DCKR_CE="docker-ce"
 
+EPEL="epel-release"
+
 mkdir -p $TMPDIR
 cd $TMPDIR
 
@@ -47,6 +49,17 @@ alias pkgginstall="sudo yum groupinstall -y"
 alias pkginstall="sudo yum install -y"
 alias pkgupdate="sudo yum update -y"
 alias makeinstall="sudo make install"
+
+
+echo "Do you want to add the epel-release repo?"
+select yn in "Yes" "No"; do
+	case $yn in 
+		Yes)
+			pkginstall $EPEL;
+			break;;
+		No)	break;;
+	esac
+done
 
 
 echo "Would you like to update packages?"
