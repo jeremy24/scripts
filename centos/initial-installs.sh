@@ -32,6 +32,12 @@ UCX_TAR="ucx-1.2.1.tar.gz"
 UCX_DIR="ucx-1.2.1"
 UCX_CONF_OPTS="--disable-numa --with-mpi --with-sse42 --prefix=/usr/local/ucx"
 
+
+
+DCKR_PKGS="yum-utils device-mapper-persistent-data lvm2"
+DCKR_REPO="https://download.docker.com/linux/centos/docker-ce.repo"
+DCKR_CE="docker-ce"
+
 mkdir -p $TMPDIR
 cd $TMPDIR
 
@@ -66,6 +72,17 @@ select yn in "Yes" "No"; do
 	esac
 done
 
+echo "Would you like to install docker?"
+select yn in "Yes" "No"; do
+	case $yn in
+		Yes)
+			pkginstall $DCKR_PKGS;
+			sudo yum-config-manager --add-repo $DCKR_REPO;
+			pkginstall $DCKR_CE;
+			break;;
+		No) 	break;;
+	esac
+done
 
 echo "Would you like to add spack?"
 select yn in "Yes" "No"; do
