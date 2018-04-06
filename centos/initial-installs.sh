@@ -61,178 +61,126 @@ ask_user () {
     return 2;
 }
 
-
+# install EPEL repo
 if tail "Do you want to add the epel-release repo?" ${END} ; then
     pkginstall ${EPEL};
 fi
 
 
+# update packages
 if tail "Would you like to update system packages?" ${END}; then
     pkgupdate;
 fi
 
-if tail "Would you like to install basic utilities?\nThey are: "${BASIC_UTILS} 20 60; then
-    pkginstall $[BASIC_UTILS];
+
+# install utils
+if tail "Would you like to install basic utilities?\nThey are: ${BASIC_UTILS}" ${END}; then
+    pkginstall ${BASIC_UTILS};
 fi
 
 
-echo "Would you like to install docker?"
-select yn in "Yes" "No"; do
-	case $yn in
-		Yes)
-			pkginstall $DCKR_PKGS;
-			sudo yum-config-manager --add-repo $DCKR_REPO;
-			pkginstall $DCKR_CE;
-			break;;
-		No) 	break;;
-	esac
-done
-
-echo "Would you like to add spack?"
-select yn in "Yes" "No"; do
-	case $yn in 
-		Yes)
-			cd $TMP_DIR;
-			git clone https://github.com/spack/spack.git;
-			. spack/share/spack/setup-env.sh;
-			break;;
-		No) break;;
-	esac
-done
-
-echo "Would you like to install dev tools?"
-select yn in "Yes" "No"; do
-	case $yn in 
-		Yes)	
-			echo "Installing Development tools group";
-			pkgginstall "Development tools";
-			pkginstall valgrind;
-			break;;
-		No)	break;;
-	esac
-done
-
-echo "Would you like to enable a proxy for yum?"
-select yn in "Yes" "No"; do
-	case $yn in 
-		Yes) 
-			ENVFILE="/etc/environment";
-			echo -n "Please enter the proxy ip/hostname:   ";
-                        read PROXYIP;
-			echo -n "Please enter the proxy port:   ";
-			read PROXYPORT;	
-			printf "http_proxy="$PROXYIP":"$PROXYPORT"\n">>$ENVFILE; 			
-			break;;
-		No)	break;;
-	esac
-done
+#install docker
+if tail "Would you like to install docker?" ${END}; then
+    pkginstall ${DCKR_PKGS};
+    sudo yum-config-manager --add-repo ${DCKR_REPO};
+    pkginstall ${DCKR_CE};
+fi
 
 
-echo "Would you like to install bind?"
-select yn in "Yes" "No"; do
-	case $yn in
-		Yes) 
-			pgkinstall bind bind-utils;
-			break;;
-		No)	break;;
-	esac
-done
+# Install spack
+if tail "Would you like to add spack?" ${END}; then
+    cd ${TMPDIR};
+    git clone https://github.com/spack/spack.git;
+    . spack/share/spack/setup-env.sh;
+fi
 
 
-echo "Would you like to install htop?"
-select yn in "Yes" "No"; do
-	case $yn in 
-		Yes) 
-			wget $EPEL_RPM_URL;
-			sudo rpm -ihv $EPEL_RPM_DIR;
-			pkginstall htop;
-			break;;
-		No) break;;
-	esac
-done
+# Install dev tools
+if tail "Would you like to add spack?" ${END}; then
+    pkgginstall "Development tools";
+    pkginstall valgrind;
+fi
+
+
+# Install dev tools
+if tail "Would you like to enable a proxy for yum?" ${END}; then
+    ENVFILE="/etc/environment";
+    echo -n "Please enter the proxy ip/hostname:   ";
+    read PROXYIP;
+    echo -n "Please enter the proxy port:   ";
+    read PROXYPORT;
+    printf "http_proxy="${PROXYIP}":"${PROXYPORT}"\n">>${ENVFILE};
+fi
+
+
+# Install bind
+if tail "Would you like to install bind?" ${END}; then
+    pgkinstall bind bind-utils;
+fi
 
 
 
-echo "Would you like to install git and configure it?"
-select yn in "Yes" "No"; do
-	case $yn in
-		Yes)
-			pkginstall git;
-			echo -n "Please enter you git username:  ";
-			read gituser;
-			echo -n "Please enter your git email:  ";
-			read gitemail;
-			git config --global user.name $gituser;
-			git config --global user.email $gitemail;
-			git config --global credential.helper store;
-			git config --global credential.helper 'cache --timeout 3600';
-			echo "Your git password will be cached for 3600 seconds.";
-			break;;
-		No)
-			break;;
-	esac
-done
-	
-echo "Would you like to install gcc 7?"
-select yn in "Yes" "No"; do
-	case $yn in 
-		Yes) 
-			echo "Installing gcc 7, this may take awhile";
-			echo "Downloading file";
-			cd $TMP_DIR;
-			mkdir -p gcc7;
-			cd gcc7;
-			curl $GCC_7_URL -O;
-			echo "Unpacking";
-			tar xvf $GCC_7_TAR;
-			cd $GCC_7_DIR;
-			echo "Building";
-			pkginstall $GCC_DEV_PKGS;
-			./configure $GCC_CONF_OPTS;
-			make -j $nproc;
-			make check;
-			makeinstall;
-			break;;
-		No) break;;
-	esac
-done
-			
-			
-echo "Would you like to install OpenMPI?"
-select yn in "Yes" "No"; do
-	case $yn in 
-		Yes)
-			echo "Installing OpenMPI";
-			echo "This may take awhile..";
-			cd $TMPDIR;
-			
-			# build and install ucx portion
-			mkdir -p ucx;
-			cd ucx;
-			wget $UCX_URL;
-			tar xvf $UCX_TAR;
-			cd $UCX_DIR;
-			./configure $UCX_CONF_OPTS;
-			make -j $(nproc);
-			make check;
-			makeinstall;		
-	
-			# build and install open mpi			
-			cd $TMPDIR;
-			mkdir -p mpi;
-			cd mpi;
-			wget $MPI_URL;
-			tar xvf $MPI_TAR;
-			cd $MPI_DIR;
-			echo $(ls);
-			./configure $MPI_CONF_OPTS;
-			make -j $(nproc);
-			make check;
-			makeinstall;
-			break;;
-		No) break;;
-	esac
-done			
+# Install htop
+if tail "Would you like to install htop?" ${END}; then
+    pgkinstall ${EPEL};
+    pkginstall htop;
+fi
+
+
+
+
+# Install gcc7
+if tail "Would you like to install GCC7?" ${END}; then
+    cd ${TMPDIR};
+    mkdir -p gcc7;
+    cd gcc7;
+    curl ${GCC_7_URL} -O;
+    tar xvf ${GCC_7_TAR};
+    cd ${GCC_7_DIR};
+    pkginstall ${GCC_DEV_PKGS};
+    ./configure ${GCC_CONF_OPTS};
+    make -j $(nproc);
+    make check;
+    makeinstall;
+fi
+
+
+
+#echo "Would you like to install OpenMPI?"
+#select yn in "Yes" "No"; do
+#	case $yn in
+#		Yes)
+#			echo "Installing OpenMPI";
+#			echo "This may take awhile..";
+#			cd $TMPDIR;
+#
+#			# build and install ucx portion
+#			mkdir -p ucx;
+#			cd ucx;
+#			wget $UCX_URL;
+#			tar xvf $UCX_TAR;
+#			cd $UCX_DIR;
+#			./configure $UCX_CONF_OPTS;
+#			make -j $(nproc);
+#			make check;
+#			makeinstall;
+#
+#			# build and install open mpi
+#			cd $TMPDIR;
+#			mkdir -p mpi;
+#			cd mpi;
+#			wget $MPI_URL;
+#			tar xvf $MPI_TAR;
+#			cd $MPI_DIR;
+#			echo $(ls);
+#			./configure $MPI_CONF_OPTS;
+#			make -j $(nproc);
+#			make check;
+#			makeinstall;
+#			break;;
+#		No) break;;
+#	esac
+#done
 
 
 
