@@ -51,32 +51,27 @@ alias pkgupdate="sudo yum update -y"
 alias makeinstall="sudo make install"
 alias tail="whiptail --yesno"
 
-
+END="20 60"
 
 ask_user () {
-    local ret=tail $1 20 60;
-    return ret;
+    echo whiptail --yesno $1 20 60;
+    if whiptail --yesno $1 20 60 ; then
+        return 1;
+    fi
+    return 2;
 }
 
 
-
-echo "Do you want to add the epel-release repo?"
-select yn in "Yes" "No"; do
-	case $yn in 
-		Yes)
-			pkginstall $EPEL;
-			break;;
-		No)	break;;
-	esac
-done
+if tail "Do you want to add the epel-release repo?" ${END} ; then
+    pkginstall ${EPEL};
+fi
 
 
-if ask_user "Would you like to update system packages?"; then
+if tail "Would you like to update system packages?" ${END}; then
     pkgupdate;
 fi
 
-if tail "Would you like to install basic utilities?" 20 60; then
-    echo "They are: " $[BASIC_UTILS];
+if tail "Would you like to install basic utilities?\nThey are: "${BASIC_UTILS} 20 60; then
     pkginstall $[BASIC_UTILS];
 fi
 
